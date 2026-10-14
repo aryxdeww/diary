@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARYXDEWW | Diary</title>
+    <title>Diary</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1> Diary</h1>
-        <p>bisa jadi clue</p>
-        <input type="text" id="searchInput" placeholder="Cari judul...">
+        <h1>Diary</h1>
+        <p>Catatan, memori, dan hal-hal random</p>
+        <input type="text" id="searchInput" placeholder="Cari judul diary...">
     </header>
 
-    <!-- Tombol-tombol diary akan otomatis muncul di dalam main ini -->
     <main id="diaryContainer"></main>
 
-    <!-- haiiiiiiiiiiiiiiModal Box untuk menampilkan isi .txt -->
+    <!-- Modal Box untuk menampilkan isi .txt -->
     <div id="diaryModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -25,6 +24,8 @@
         </div>
     </div>
 
+    <!-- PENTING: Panggil data dulu, baru panggil mesin/logikanya -->
+    <script src="data.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

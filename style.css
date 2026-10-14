@@ -35,30 +35,30 @@ p {
 }
 
 #searchInput {
-    width: 100%;
-    padding: 12px 15px;
-    margin-top: 20px;
-    background-color: var(--bg-card);
-    border: 1px solid var(--accent-soft);
-    color: #fff;
-    border-radius: 8px;
-    outline: none;
-    box-sizing: border-box;
-    font-size: 16px;
-    transition: all 0.3s;
+width: 100%;
+padding: 12px 15px;
+margin-top: 20px;
+background-color: var(--bg-card);
+border: 1px solid var(--accent-soft);
+color: #fff;
+border-radius: 8px;
+outline: none;
+box-sizing: border-box;
+font-size: 16px;
+transition: all 0.3s;
 }
 
 #searchInput:focus {
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 8px rgba(147, 92, 216, 0.4);
+border-color: var(--accent-primary);
+box-shadow: 0 0 8px rgba(147, 92, 216, 0.4);
 }
 
 #diaryContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 15px;
-    width: 100%;
-    max-width: 700px;
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+gap: 15px;
+width: 100%;
+max-width: 700px;
 }
 
 .diary-btn {
@@ -83,10 +83,10 @@ p {
 
 /* --- Styling Modal --- */
 .modal {
-    display: none; /* Sembunyi secara default */
+    display: none;
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(26, 23, 29, 0.85); /* 1a171d dengan transparansi */
+    background-color: rgba(26, 23, 29, 0.85); /* transparan dikit */
     backdrop-filter: blur(4px);
     justify-content: center;
     align-items: center;
@@ -109,17 +109,17 @@ p {
 }
 
 #modalTitle {
-    color: var(--accent-primary);
-    margin-top: 0;
-    border-bottom: 1px solid var(--accent-soft);
-    padding-bottom: 15px;
-    padding-right: 30px; /* Jarak untuk tombol close */
+color: var(--accent-primary);
+margin-top: 0;
+border-bottom: 1px solid var(--accent-soft);
+padding-bottom: 15px;
+padding-right: 30px;
 }
 
 #modalBody {
-    color: var(--text-muted);
-    line-height: 1.7;
-    white-space: pre-wrap; /* PENTING: Mempertahankan enter/spasi dari file .txt */
+color: var(--text-muted);
+line-height: 1.7;
+white-space: pre-wrap; /* Mempertahankan enter/spasi dari .txt */
 }
 
 .close-btn {

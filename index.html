@@ -166,11 +166,9 @@ white-space: pre-wrap; /* Mempertahankan enter/spasi dari .txt */
 
     <!-- ENTRIES -->
     <script>
-        // Kalau ada diary baru, tambahkan di bawah sini aja ya.
+        // FYI: kalau mau nambah, tinggal copy line dibawah const tapi jangan lupa ditambah koma. - Azusa
         const diaryEntries = [
-            { title: "Hari Pertama Belajar Godot", file: "2026-09-godot.txt" },
-            { title: "Review Zorin OS", file: "2026-08-zorin.txt" },
-            { title: "Bikin Web Profile", file: "2026-09-profile.txt" }
+            { title: "Yang memulai semua ini.", file: "01-ymsi.txt" }
         ];
     </script>
     <script>
@@ -213,23 +211,23 @@ white-space: pre-wrap; /* Mempertahankan enter/spasi dari .txt */
                 modalBody.textContent = text;
             }
                 catch (error) {
-                    modalBody.textContent = `Gagal memuat. Pastikan file "${entry.file}" ada di dalam folder "assets/text/".`;
+                    modalBody.textContent = `Gagal memuat. antara belum kutambahin atau aku lagi nulis ini.`;
                 }
         }
 
-        // Tutup modal ketika tombol X ditekan
+        // CLOSE
         closeBtn.onclick = () => {
             modal.style.display = 'none';
         };
 
-        // Tutup modal ketika area luar modal diklik
+        // CLOSE DARI LUAR WINDOW
         window.onclick = (e) => {
             if (e.target === modal) {
                 modal.style.display = 'none';
             }
         };
 
-        // Fitur Search berdasarkan judul
+        // SEARCH
         searchInput.addEventListener('input', (e) => {
             const keyword = e.target.value.toLowerCase();
             const filtered = diaryEntries.filter(entry =>

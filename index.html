@@ -26,9 +26,12 @@
 
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             width: 100%;
             max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         h1 {
@@ -38,24 +41,26 @@
 
         p {
             margin-top: 0;
-        color: var(--accent-soft);
+            color: var(--accent-soft);
         }
 
-        #searchInput {
+        /* --- Dropdown Filter --- */
+        #sortSelect {
             width: 100%;
-            padding: 12px 15px;
-            margin-top: 20px;
+            max-width: 250px;
+            padding: 10px 15px;
+            margin-top: 15px;
             background-color: var(--bg-card);
             border: 1px solid var(--accent-soft);
             color: #fff;
             border-radius: 8px;
             outline: none;
-            box-sizing: border-box;
-            font-size: 16px;
+            font-size: 15px;
+            cursor: pointer;
             transition: all 0.3s;
         }
 
-        #searchInput:focus {
+        #sortSelect:focus {
             border-color: var(--accent-primary);
             box-shadow: 0 0 8px rgba(147, 92, 216, 0.4);
         }
@@ -68,6 +73,7 @@
             max-width: 700px;
         }
 
+        /* --- Button Regular --- */
         .diary-btn {
             background-color: var(--bg-card);
             color: var(--text-muted);
@@ -79,13 +85,65 @@
             font-weight: bold;
             text-align: left;
             transition: all 0.2s ease;
+            position: relative;
         }
 
         .diary-btn:hover {
-            background-color: var(--accent-primary);
-            color: var(--bg-dark);
-            border-color: var(--accent-primary);
             transform: translateY(-2px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 4px 10px rgba(147, 92, 216, 0.2);
+        }
+
+        /* --- Button Special (Animated) --- */
+       .diary-btn.special {
+            position: relative;
+            background-color: var(--bg-card);
+            color: var(--text-muted);
+            border: 1px solid var(--accent-primary);
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: left;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(147, 92, 216, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .diary-btn.special::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(147, 92, 216, 0.4),
+                transparent
+            );
+            animation: glaze 3s infinite;
+        }
+
+        .diary-btn.special:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(147, 92, 216, 0.6);
+            background-color: var(--bg-dark);
+            border-color: var(--accent-primary);
+        }
+
+        @keyframes glaze {
+            0% {
+                left: -100%;
+            }
+            20% {
+                left: 200%;
+            }
+            100% {
+                left: 200%;
+            }
         }
 
         /* --- Styling Modal --- */
@@ -107,26 +165,53 @@
             border: 1px solid var(--accent-primary);
             border-radius: 12px;
             padding: 25px;
-             width: 100%;
-            max-width: 600px;
-            max-height: 80vh;
+            width: 100%;
+            max-width: 650px;
+            max-height: 85vh;
             overflow-y: auto;
             position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
 
         #modalTitle {
             color: var(--accent-primary);
-            margin-top: 0;
+            margin: 0 0 5px 0;
+            padding-right: 30px;
+        }
+
+        #modalDates {
+            font-size: 0.85em;
+            color: var(--accent-soft);
             border-bottom: 1px solid var(--accent-soft);
             padding-bottom: 15px;
-            padding-right: 30px;
+            margin-bottom: 15px;
         }
 
         #modalBody {
             color: var(--text-muted);
             line-height: 1.7;
             white-space: pre-wrap;
+        }
+
+        .diary-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .diary-link:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        .diary-img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: block;
+            border: 1px solid var(--accent-soft);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
         .close-btn {
@@ -143,96 +228,145 @@
         .close-btn:hover {
             color: var(--accent-primary);
         }
-
     </style>
 </head>
 <body>
     <header>
         <h1>Diary</h1>
         <p>Catatan, memori, dan hal-hal random</p>
-        <input type="text" id="searchInput" placeholder="Cari judul diary...">
+
+        <!-- Filter Dropdown -->
+        <select id="sortSelect">
+            <option value="default">Urutan bawaan</option>
+            <option value="modified">Terakhir kuedit</option>
+        </select>
     </header>
 
     <main id="diaryContainer"></main>
 
-    <!-- Modal Box untuk menampilkan isi .txt -->
     <div id="diaryModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <h2 id="modalTitle">Masukan Teks</h2>
+            <div id="modalDates"></div>
             <div id="modalBody">Memuat isi diary...</div>
         </div>
     </div>
 
-    <!-- ENTRIES -->
+    <!-- ENTRIES DATA -->
     <script>
-        // FYI: kalau mau nambah, tinggal copy line dibawah const tapi jangan lupa ditambah koma. - Azusa
+        // FYI: Format tanggal wajib YYYY-MM-DDTHH:MM (jam 24 format).
+        // Type isi "special" untuk animasi glow, atau "regular" untuk biasa.
         const diaryEntries = [
-            { title: "Yang memulai semua ini.", file: "01-ymsi.txt" }
+            {
+                title: "Yang memulai semua ini.",
+                file: "01-ymsi.txt",
+                codename: "ymsi",
+                type: "regular",
+                date_created: "2026-04-18T09:00",
+                last_modified: "2026-10-17T19:00"
+            },
+            {
+                title: "Sebuah Pengakuan (Special)",
+                file: "02-secret.txt",
+                codename: "secret",
+                type: "special",
+                date_created: "2026-09-10T22:30",
+                last_modified: "2026-10-17T19:45"
+            }
         ];
     </script>
+
+    <!-- LOGIC -->
     <script>
         const container = document.getElementById('diaryContainer');
-        const searchInput = document.getElementById('searchInput');
+        const sortSelect = document.getElementById('sortSelect');
         const modal = document.getElementById('diaryModal');
         const modalTitle = document.getElementById('modalTitle');
+        const modalDates = document.getElementById('modalDates');
         const modalBody = document.getElementById('modalBody');
         const closeBtn = document.querySelector('.close-btn');
 
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+            const d = date.getDate();
+            const m = months[date.getMonth()];
+            const y = date.getFullYear();
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+
+            return `${d} ${m} ${y}, ${hours}:${minutes}`;
+        }
+
+        // Translate txt -> markdown dasar
+        function parseContent(text, codename) {
+            let parsed = text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+
+            // ![alt teks](nama-file.webp)
+            parsed = parsed.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, filename) => {
+                return `<img src="assets/gallery/${codename}/${filename}" alt="${alt}" class="diary-img">`;
+            });
+
+            // [teks](url)
+            parsed = parsed.replace(/\[(.*?)\]\((.*?)\)/g, `<a href="$2" target="_blank" class="diary-link">$1</a>`);
+
+            return parsed;
+        }
+
         function renderButtons(entries) {
             container.innerHTML = '';
-
-            if (entries.length === 0) {
-                container.innerHTML = '<p style="text-align:center; width:100%;">Tidak ada judul yang cocok.</p>';
-            return;
-            }
-
             entries.forEach(entry => {
                 const btn = document.createElement('button');
-                btn.className = 'diary-btn';
-                btn.textContent = entry.title;
+                btn.className = entry.type === 'special' ? 'diary-btn special' : 'diary-btn';
+
+                if (entry.type === 'special') {
+                    const innerText = document.createElement('div');
+                    innerText.className = 'special-inner';
+                    innerText.textContent = entry.title;
+                    btn.appendChild(innerText);
+                } else {
+                    btn.textContent = entry.title;
+                }
+
                 btn.onclick = () => openModal(entry);
                 container.appendChild(btn);
             });
         }
 
         async function openModal(entry) {
-        modalTitle.textContent = entry.title;
-        modalBody.textContent = "Memuat isi diary...";
-        modal.style.display = 'flex'; // START
+            modalTitle.textContent = entry.title;
+            modalDates.innerHTML = `Dibuat: ${formatDate(entry.date_created)} &nbsp;|&nbsp; Terakhir Diedit: ${formatDate(entry.last_modified)}`;
+            modalBody.textContent = "Memuat isi diary...";
+            modal.style.display = 'flex';
 
             try {
                 const response = await fetch(`assets/text/${entry.file}`);
                 if (!response.ok) throw new Error('File tidak ditemukan');
 
                 const text = await response.text();
-                modalBody.textContent = text;
+                modalBody.innerHTML = parseContent(text, entry.codename);
+            } catch (error) {
+                modalBody.innerHTML = `Gagal memuat. Antara belum kutambahin file-nya, atau aku lagi nulis ini.`;
             }
-                catch (error) {
-                    modalBody.textContent = `Gagal memuat. antara belum kutambahin atau aku lagi nulis ini.`;
-                }
         }
 
-        // CLOSE
-        closeBtn.onclick = () => {
-            modal.style.display = 'none';
-        };
+        sortSelect.addEventListener('change', (e) => {
+            let sortedEntries = [...diaryEntries];
 
-        // CLOSE DARI LUAR WINDOW
-        window.onclick = (e) => {
-            if (e.target === modal) {
-                modal.style.display = 'none';
+            if (e.target.value === 'modified') {
+                sortedEntries.sort((a, b) => new Date(b.last_modified) - new Date(a.last_modified));
             }
-        };
 
-        // SEARCH
-        searchInput.addEventListener('input', (e) => {
-            const keyword = e.target.value.toLowerCase();
-            const filtered = diaryEntries.filter(entry =>
-            entry.title.toLowerCase().includes(keyword)
-            );
-            renderButtons(filtered);
+            renderButtons(sortedEntries);
         });
+
+        closeBtn.onclick = () => modal.style.display = 'none';
+        window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
 
         renderButtons(diaryEntries);
     </script>
